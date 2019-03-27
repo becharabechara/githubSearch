@@ -1,28 +1,49 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import CustomNavbar from './Components/CustomNavbar';
+import SearchPage from './Screens/SearchPage';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { RepositoryDetails } from './Components/RepositoryDetails';
+import { withStyles } from '@material-ui/core/styles';
+
+const styles = theme => ({
+  main: {
+    width: 'auto',
+    display: 'flex',
+    flexDirection:'column',
+    margin:'auto'    
+  }
+});
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      repository: []
+    }
+  }
+  sendRepositoryDetails = (rep) => {
+    console.log("toto")
+    this.setState({
+      repository: rep
+    })
+  }
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div className={this.props.classes.main}>
+        <div className="App">
+          <CustomNavbar title="Github Search"/>
+          <BrowserRouter>
+            <Switch>
+              <Route path="/" exact render={(props) => <SearchPage sendRepositoryDetails={this.sendRepositoryDetails} {...props} />} />
+              <Route path="/repository/:repoId" render={(props) => <RepositoryDetails rep={this.state.repository} {...props} />} />
+              <Route render={() => <p>404 Not Found</p>} />
+            </Switch>
+          </BrowserRouter>
+        </div>
       </div>
     );
   }
 }
 
-export default App;
+export default withStyles(styles)(App);
